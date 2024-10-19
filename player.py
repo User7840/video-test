@@ -40,6 +40,7 @@ def playVideos(videos):
 
 def signal_handler(signal, frame):
     print("Keyboard interrupt, exiting")
+    os.system ("killall vlc")
     instance.release()
     exit(0)
 
