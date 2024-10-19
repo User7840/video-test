@@ -13,8 +13,6 @@ def getVideos():
     for file in os.listdir(directory):
         if file.lower().endswith('.mp4'):
             videos.append(os.path.join(directory, file))
-
-    print(videos)
     return videos
 
 def play_video(video):
@@ -34,6 +32,9 @@ def playVideos(videos):
         random.shuffle(videos)
         for video in videos:
             play_video(video)
+    else:
+        print('No videos found')
+        exit()
 
 playVideos(getVideos())
 while True:
