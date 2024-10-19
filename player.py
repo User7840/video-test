@@ -1,12 +1,14 @@
 import os
 import random
 import vlc
+import signal
 import time
 from subprocess import PIPE, Popen, STDOUT
 
 directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'videos')
 
-global playing
+playing = False
+instance = vlc.Instance()
 
 def getVideos():
     videos = []
@@ -16,7 +18,7 @@ def getVideos():
     return videos
 
 def play_video(video):
-    instance = vlc.Instance()
+    
     if not instance:
         print('failed to get vlc instance')
         return
@@ -35,6 +37,13 @@ def playVideos(videos):
     else:
         print('No videos found')
         exit()
+
+def signal_handler(signal, frame):
+    print("Keyboard interrupt, exiting")
+    instance.release()
+    exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 playVideos(getVideos())
 while True:
