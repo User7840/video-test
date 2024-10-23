@@ -1,50 +1,32 @@
 import os
 import random
-import vlc
-import signal
 import time
+import mpv
 from subprocess import PIPE, Popen, STDOUT
 
 directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'videos')
 
-playing = False
-instance = vlc.Instance()
+global playing
 
 def getVideos():
     videos = []
     for file in os.listdir(directory):
         if file.lower().endswith('.mp4'):
             videos.append(os.path.join(directory, file))
+
+    print(videos)
     return videos
 
 def play_video(video):
-    
-    if not instance:
-        print('failed to get vlc instance')
-        return
-    else:
-        player = instance.media_player_new()
-        media = instance.media_new(video)
-        player.set_media(media)
-        player.play()
-        print(player.get_state())
+    player = mpv.MPV(ytdl=True)
+    player.play(video)
+    player.wait_for_playback()
 
 def playVideos(videos):
     if len(videos) > 0:
         random.shuffle(videos)
         for video in videos:
             play_video(video)
-    else:
-        print('No videos found')
-        exit()
-
-def signal_handler(signal, frame):
-    print("Keyboard interrupt, exiting")
-    os.system ("killall vlc")
-    instance.release()
-    exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
 
 playVideos(getVideos())
 while True:
